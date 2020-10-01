@@ -1,0 +1,31 @@
+/* First Importing the required packages
+  This IO operation are done with channels
+*/
+
+import java.io.*;
+import java.nio.*;
+import java.nio.channels.*;
+
+//Creating the Class
+
+class NIO_Console_IO{
+	public static void main(String args[]){
+		try(ReadableByteChannel rbc = Channels.newChannel(new BufferedInputStream(System.in));    // Two Channels are created one for Input and other for output
+			WritableByteChannel wbc = Channels.newChannel(new BufferedOutputStream(System.out));){    // creating the channel in try catch block. it implements autocloseable
+			if(!rbc.isOpen())   // Checking the channel is open or not otherwise print the error message
+				System.out.println("Connection Failed To Input Channel");
+			System.out.println("Connection To Input Channel Is Open Now");  // Connection is ready now.
+
+			ByteBuffer bb = ByteBuffer.allocate(50);    // to read the input we need to store them that's why we use ByteBuffer class for that it is mandatory.
+			rbc.read(bb);   //storing the content to ByteBuffer object. there is only 50 bytes available for storage (we can declare as we want)
+			bb.flip();    //flipping the Buffer because after reading content to buffer it fills the buffer left to right so that their seek will move to the end.
+      
+		/*	while(bb.position() != bb.limit())	//It Also Works
+				System.out.print((char)bb.get());
+		*/
+			wbc.write(bb);    // Writing the content to the console or file which is declared in output channel.
+		}catch(Exception e){
+			System.out.println(e);
+		}
+	}
+}
